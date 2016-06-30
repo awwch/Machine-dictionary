@@ -2,7 +2,7 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 1360,
+   "execution_count": 224,
    "metadata": {
     "collapsed": true
    },
@@ -13,7 +13,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1361,
+   "execution_count": 225,
    "metadata": {
     "collapsed": false
    },
@@ -25,7 +25,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1362,
+   "execution_count": 226,
    "metadata": {
     "collapsed": true
    },
@@ -49,7 +49,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1363,
+   "execution_count": 227,
    "metadata": {
     "collapsed": false
    },
@@ -60,7 +60,7 @@
     "    line =  re.sub('@.', '<' + line[0:2] + '>', line) #открываем тэг\n",
     "    #line =  re.sub('<\\~>','', line)\n",
     "    if line[1:3] != '@A' and line not in ['\\n', '\\r\\n']:\n",
-    "        line = (line + '<\\\\'  + line[1:3] + '>' + '\\n') #закрываем тэг, если это не @A (с ним работаем отдельно)\n",
+    "        line = (line + '</'  + line[1:3] + '>' + '\\n') #закрываем тэг, если это не @A (с ним работаем отдельно)\n",
     "    bag_with_BTS.append(line) "
    ]
   },
@@ -73,7 +73,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1364,
+   "execution_count": 228,
    "metadata": {
     "collapsed": false
    },
@@ -106,7 +106,7 @@
     "            #убираем закрытие middle тэга на его собственной строке\n",
     "            bag_with_BTS[i] =  re.sub('<...>' ,'', bag_with_BTS[i])  \n",
     "            #закрываем на строке подчиняющегося тэга\n",
-    "            bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '<\\\\@'  + cur_tag + '>' + '\\n') \n",
+    "            bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '</@'  + cur_tag + '>' + '\\n') \n",
     "        else: pass\n",
     "    else:\n",
     "        pass"
@@ -121,7 +121,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1365,
+   "execution_count": 229,
    "metadata": {
     "collapsed": false
    },
@@ -130,15 +130,15 @@
     "for i, line in enumerate(bag_with_BTS):\n",
     "    cur_tag = line[2:3]\n",
     "    if cur_tag == 'w' and bag_with_BTS[i+1][2:3] == 'x' and bag_with_BTS[i+2][2:3] == 'w':\n",
-    "        bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '\\n' + '<\\@x>')\n",
+    "        bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '\\n' + '</@x>')\n",
     "        bag_with_BTS[i+2] = re.sub('<.@x>' ,'', bag_with_BTS[i+2]) \n",
     "        \n",
     "for i, line in enumerate(bag_with_BTS):\n",
     "    cur_tag = line[2:3]\n",
     "    if cur_tag == 'x' and bag_with_BTS[i+1][2:3] == 'w' and bag_with_BTS[i+2][2:3] == 'x':\n",
-    "        bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '\\n' + '<\\@w>')\n",
+    "        bag_with_BTS[i+1] = (bag_with_BTS[i+1] + '\\n' + '</@w>')\n",
     "        bag_with_BTS[i+2] = re.sub('<.@w>' ,'', bag_with_BTS[i+2])\n",
-    "        bag_with_BTS[i+2] = (bag_with_BTS[i+2] + '<\\@x>' + '\\n')"
+    "        bag_with_BTS[i+2] = (bag_with_BTS[i+2] + '</@x>' + '\\n')"
    ]
   },
   {
@@ -150,7 +150,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1366,
+   "execution_count": 230,
    "metadata": {
     "collapsed": false,
     "scrolled": false
@@ -177,13 +177,13 @@
     "            j = j+1 \n",
     "        #закрываем strong тэг на строке подчиняющегося тэга \n",
     "        bag_with_BTS[i] =  re.sub('<...>' ,'', bag_with_BTS[i])\n",
-    "        bag_with_BTS[j] = (bag_with_BTS[j] + '<\\\\@'  + cur_tag + '>' + '\\n')\n",
+    "        bag_with_BTS[j] = (bag_with_BTS[j] + '</@'  + cur_tag + '>' + '\\n')\n",
     "    else:\n",
     "        pass \n",
     "\n",
     "for i,line in enumerate(bag_with_BTS):\n",
     "    if line in ['\\n', '\\r\\n']:\n",
-    "        bag_with_BTS[i-1] = (bag_with_BTS[i-1] + '<\\@A>' + '\\n') #закрываем тэг @A"
+    "        bag_with_BTS[i-1] = (bag_with_BTS[i-1] + '</@A>' + '\\n') #закрываем тэг @A"
    ]
   },
   {
@@ -195,7 +195,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1367,
+   "execution_count": 231,
    "metadata": {
     "collapsed": false
    },
@@ -208,7 +208,7 @@
     "    for j in range(len(strong_tags)):\n",
     "        #фиксируем сильный тэг, который сейчас ищем\n",
     "        cur_tag = strong_tags[j] \n",
-    "        if ('<\\\\@' + cur_tag + '>') in bag_with_BTS[i]:\n",
+    "        if ('</@' + cur_tag + '>') in bag_with_BTS[i]:\n",
     "            #фиксируем его позицию в строке\n",
     "            index = strong_tags.index(cur_tag)\n",
     "            index_next = index + 1\n",
@@ -218,8 +218,8 @@
     "                    index_next = index_next +1\n",
     "                if index_next != 6:\n",
     "                    #меняем их местами\n",
-    "                    bag_with_BTS[i] = bag_with_BTS[i].replace('<\\\\@'+ strong_tags[index+1] +'>', '<\\\\@' + cur_tag + '>')\n",
-    "                    bag_with_BTS[i] = bag_with_BTS[i].replace( '<\\\\@' + cur_tag + '>', '<\\\\@'+ strong_tags[index+1] +'>', 1)\n",
+    "                    bag_with_BTS[i] = bag_with_BTS[i].replace('</@'+ strong_tags[index+1] +'>', '</@' + cur_tag + '>')\n",
+    "                    bag_with_BTS[i] = bag_with_BTS[i].replace( '</@' + cur_tag + '>', '</@'+ strong_tags[index+1] +'>', 1)\n",
     "                else: \n",
     "                    pass\n",
     "            else:\n",
@@ -237,7 +237,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1368,
+   "execution_count": 232,
    "metadata": {
     "collapsed": false,
     "scrolled": false
@@ -262,8 +262,8 @@
     "        #делаем так, чтобы тэг закрывался в нужном месте: убираем его закрытие на прежнем месте\n",
     "        bag_with_BTS[i] =  re.sub('<.@'  + cur_tag + '>','', bag_with_BTS[i])\n",
     "        #закрываем его на строке, где закрывается скобка\n",
-    "        if ('<\\\\@'  + cur_tag + '>') not in bag_with_BTS[j]:\n",
-    "            bag_with_BTS[j] = (bag_with_BTS[j] + '<\\\\@'  + cur_tag + '>' + '\\n')\n",
+    "        if ('</@'  + cur_tag + '>') not in bag_with_BTS[j]:\n",
+    "            bag_with_BTS[j] = (bag_with_BTS[j] + '</@'  + cur_tag + '>' + '\\n')\n",
     "        else:\n",
     "            pass\n",
     "        #убираем его на предыдущих строках, если есть\n",
@@ -271,11 +271,57 @@
     "            bag_with_BTS[j-1] =  re.sub('<.@'  + cur_tag + '>' ,'', bag_with_BTS[j-1])\n",
     "            j=j-1\n",
     "    else:\n",
-    "        pass\n",
-    "\n",
+    "        pass\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Замена тэгов БТС на тэги TEI"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 233,
+   "metadata": {
+    "collapsed": false
+   },
+   "outputs": [],
+   "source": [
+    "for i, line in enumerate(bag_with_BTS):\n",
     "    \n",
-    "#for i in bag_with_BTS:\n",
-    "    #print(i) "
+    "    if '<@A>' in line and '<orth>' not in bag_with_BTS[i-1]: \n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '<orth>' + keyword + '</orth>' + '\\n')\n",
+    "    if '<@A>' in line and '\\'' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace('\\'', '' )\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace('\\\\', '' )\n",
+    "        bag_with_BTS[i] += ('\\n' + '<stress>' + keyword + '</stress>' + '\\n')\n",
+    "    if '</@A>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '</superEntry>' + '\\n''\\n''\\n' + '<superEntry>')\n",
+    "        \n",
+    "    if '<@w>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace('<@w>',  '<def>')\n",
+    "    if '</@w>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace('</@w>', '</def>')\n",
+    "        \n",
+    "    if '<@y>' in line and '<@y>' not in bag_with_BTS[i-2]: #окружение открывается только в первый раз\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '<cit type = ‘example’>' + '\\n' + '<q>' + line[4:] )\n",
+    "    if '<@y>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '<q>' + line[4:])\n",
+    "    try:\n",
+    "        if '</@y>' in line and '</@y>' not in bag_with_BTS[i+2]: #окружение закрывается только в последний раз\n",
+    "            bag_with_BTS[i] = bag_with_BTS[i].replace(line, '</q>' + '\\n' + '</cit>')\n",
+    "    except:\n",
+    "        continue \n",
+    "\n",
+    "    if '</@y>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '</q>')\n",
+    "        \n",
+    "    if '<@C>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '<xr>' + '\\n' + '<ref>' + line[4:] + '</ref>')\n",
+    "    if '</@C>' in line:\n",
+    "        bag_with_BTS[i] = bag_with_BTS[i].replace(line, '</xr>')"
    ]
   },
   {
@@ -287,7 +333,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 1369,
+   "execution_count": 234,
    "metadata": {
     "collapsed": false
    },
